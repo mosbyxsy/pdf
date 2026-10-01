@@ -27,7 +27,7 @@ See https://github.com/adobe-type-tools/cmap-resources
     <!--#if GENERIC || CHROME-->
     <meta name="google" content="notranslate" />
     <!--#endif-->
-    <title>PDF阅读器</title>
+    <title></title>
     <!--#if GENERIC-->
     <link rel="icon" type="image/svg+xml" href="images/pdf-reader.svg" />
     <!--#endif-->
@@ -126,7 +126,7 @@ See https://github.com/adobe-type-tools/cmap-resources
 
   <body tabindex="0">
     <!--#if GENERIC-->
-    <div id="fileChooserStartup" role="status">正在准备 PDF 查看器…</div>
+    <div id="fileChooserStartup" role="status" data-l10n-id="pdfjs-file-chooser-preparing"></div>
     <!--#endif-->
     <div id="outerContainer">
       <span id="viewer-alert" class="visuallyHidden" role="alert"></span>
@@ -692,8 +692,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                       <button id="secondaryOpenFile" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-open-file-button">
                         <span data-l10n-id="pdfjs-open-file-button-label"></span>
                       </button>
-                      <button id="secondaryChooseFile" class="toolbarButton labeled" type="button" tabindex="0" aria-label="选择文件" aria-keyshortcuts="Control+Alt+O Meta+Alt+O" title="选择文件">
-                        <span>选择文件</span>
+                      <button id="secondaryChooseFile" class="toolbarButton labeled" type="button" tabindex="0" aria-keyshortcuts="Control+Alt+O Meta+Alt+O" data-l10n-id="pdfjs-file-chooser-button">
+                        <span data-l10n-id="pdfjs-file-chooser-button-label"></span>
                       </button>
                       <!--#endif-->
 
@@ -1343,27 +1343,27 @@ See https://github.com/adobe-type-tools/cmap-resources
       <header class="fileChooserHeader">
         <div class="fileChooserBrand">
           <img class="fileChooserBrandIcon" src="images/pdf-reader.svg" alt="" aria-hidden="true" />
-          <strong>PDF阅读器</strong>
+          <strong data-l10n-id="pdfjs-file-chooser-app-title"></strong>
         </div>
-        <button id="fileChooserClose" class="fileChooserClose" type="button" hidden>返回文档</button>
+        <button id="fileChooserClose" class="fileChooserClose" type="button" data-l10n-id="pdfjs-file-chooser-return" hidden></button>
       </header>
       <main class="fileChooserMain">
         <div class="fileChooserIntro">
-          <h1 id="fileChooserTitle">选择要查看的文件</h1>
-          <p>从电脑选择 PDF，或打开预置文件和在线地址。</p>
+          <h1 id="fileChooserTitle" data-l10n-id="pdfjs-file-chooser-title"></h1>
+          <p data-l10n-id="pdfjs-file-chooser-description"></p>
         </div>
-        <p id="fileChooserMessage" class="fileChooserMessage" role="status" aria-live="polite">正在读取文件配置…</p>
+        <p id="fileChooserMessage" class="fileChooserMessage" role="status" aria-live="polite"></p>
         <div class="fileChooserGrid">
           <div id="fileChooserDropZone" class="fileChooserDropZone">
             <span class="fileChooserDropIcon" aria-hidden="true"></span>
-            <strong>本地 PDF 文件</strong>
-            <span>将 PDF 拖到这里，或从电脑中选择</span>
-            <button id="fileChooserBrowse" class="fileChooserPrimaryButton" type="button">浏览文件</button>
+            <strong data-l10n-id="pdfjs-file-chooser-local-title"></strong>
+            <span data-l10n-id="pdfjs-file-chooser-drop-hint"></span>
+            <button id="fileChooserBrowse" class="fileChooserPrimaryButton" type="button" data-l10n-id="pdfjs-file-chooser-browse"></button>
             <input id="fileChooserInput" type="file" accept=".pdf,application/pdf" hidden />
           </div>
           <div class="fileChooserRemote">
             <div class="fileChooserField">
-              <label id="fileChooserPresetLabel" for="fileChooserPreset">预置文件</label>
+              <label id="fileChooserPresetLabel" for="fileChooserPreset" data-l10n-id="pdfjs-file-chooser-preset-label"></label>
               <div class="fileChooserFieldRow">
                 <div class="fileChooserPreset">
                   <button
@@ -1376,20 +1376,20 @@ See https://github.com/adobe-type-tools/cmap-resources
                     aria-labelledby="fileChooserPresetLabel fileChooserPresetValue"
                     disabled
                   >
-                    <span id="fileChooserPresetValue">暂无预置文件</span>
+                    <span id="fileChooserPresetValue" data-l10n-id="pdfjs-file-chooser-no-preset"></span>
                     <span class="fileChooserPresetChevron" aria-hidden="true"></span>
                   </button>
                   <div id="fileChooserPresetList" class="fileChooserPresetList" role="listbox" aria-labelledby="fileChooserPresetLabel" hidden></div>
                 </div>
-                <button id="fileChooserOpenPreset" class="fileChooserSecondaryButton" type="button" disabled>打开</button>
+                <button id="fileChooserOpenPreset" class="fileChooserSecondaryButton" type="button" data-l10n-id="pdfjs-file-chooser-open" disabled></button>
               </div>
             </div>
-            <div class="fileChooserDivider"><span>或输入文件地址</span></div>
+            <div class="fileChooserDivider"><span data-l10n-id="pdfjs-file-chooser-or-url"></span></div>
             <div class="fileChooserField">
-              <label for="fileChooserUrl">PDF URL</label>
+              <label for="fileChooserUrl" data-l10n-id="pdfjs-file-chooser-url-label"></label>
               <div class="fileChooserFieldRow">
-                <input id="fileChooserUrl" type="url" inputmode="url" placeholder="https://example.com/document.pdf" autocomplete="off" />
-                <button id="fileChooserOpenUrl" class="fileChooserSecondaryButton" type="button">加载</button>
+                <input id="fileChooserUrl" type="url" inputmode="url" data-l10n-id="pdfjs-file-chooser-url-input" autocomplete="off" />
+                <button id="fileChooserOpenUrl" class="fileChooserSecondaryButton" type="button" data-l10n-id="pdfjs-file-chooser-load"></button>
               </div>
             </div>
           </div>

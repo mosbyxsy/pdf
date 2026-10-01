@@ -731,3 +731,52 @@ pdfjs-editor-add-signature-edit-button-label = 编辑描述
 ## Edit signature description dialog
 
 pdfjs-editor-edit-signature-dialog-title = 编辑描述
+
+## 通用查看器文件选择界面
+
+pdfjs-file-chooser-app-title = PDF阅读器
+pdfjs-file-chooser-preparing = 正在准备 PDF 查看器…
+pdfjs-file-chooser-button =
+    .title =
+        { PLATFORM() ->
+            [macos] 选择文件（⌘⌥O）
+           *[other] 选择文件（Ctrl+Alt+O）
+        }
+pdfjs-file-chooser-button-label = 选择文件
+pdfjs-file-chooser-return = 返回文档
+pdfjs-file-chooser-title = 选择要查看的文件
+pdfjs-file-chooser-description = 从电脑选择 PDF，或打开预置文件和在线地址。
+pdfjs-file-chooser-local-title = 本地 PDF 文件
+pdfjs-file-chooser-drop-hint = 将 PDF 拖到这里，或从电脑中选择
+pdfjs-file-chooser-browse = 浏览文件
+pdfjs-file-chooser-preset-label = 预置文件
+pdfjs-file-chooser-no-preset = 暂无预置文件
+pdfjs-file-chooser-sample-text = 文字与搜索示例（2 页）
+pdfjs-file-chooser-sample-graphics = 矢量图形示例（1 页）
+pdfjs-file-chooser-sample-tracemonkey = TraceMonkey 论文示例（14 页）
+pdfjs-file-chooser-open = 打开
+pdfjs-file-chooser-or-url = 或输入文件地址
+pdfjs-file-chooser-url-label = PDF URL
+pdfjs-file-chooser-url-input =
+    .placeholder = https://example.com/document.pdf
+pdfjs-file-chooser-load = 加载
+pdfjs-file-chooser-loading-config = 正在读取文件配置…
+pdfjs-file-chooser-select-file = 请选择一个 PDF 文件。
+pdfjs-file-chooser-select-pdf = 请选择 PDF 文件。
+pdfjs-file-chooser-url-required = 请输入 PDF URL 或选择预置文件。
+pdfjs-file-chooser-invalid-url = PDF URL 无效。
+pdfjs-file-chooser-url-http-only = PDF URL 必须使用 HTTP(S)。
+pdfjs-file-chooser-opening = 正在打开“{ $name }”…
+pdfjs-file-chooser-reading = 正在读取“{ $name }”…
+pdfjs-file-chooser-open-error = 无法打开“{ $name }”：{ $reason }
+pdfjs-file-chooser-unknown-error = 未知错误
+pdfjs-file-chooser-url-update-error = 无法更新当前文件地址：
+pdfjs-file-chooser-config-url-required = config 参数不能为空。
+pdfjs-file-chooser-config-invalid-url = config URL 无效。
+pdfjs-file-chooser-config-http-url = config 参数必须指向 HTTP(S) JSON 文件。
+pdfjs-file-chooser-config-fetch-error = 无法读取 config JSON，请检查地址和服务器的 CORS 设置。
+pdfjs-file-chooser-config-http-error = 无法读取文件配置（HTTP { $status }）。
+pdfjs-file-chooser-config-invalid-json = config 文件不是有效的 JSON。
+pdfjs-file-chooser-config-files-required = config JSON 必须包含 files 数组。
+pdfjs-file-chooser-config-invalid-default = defaultFileId 必须是字符串、数字或 null。
+pdfjs-file-chooser-startup-error = 文件配置或默认文件加载失败：{ $reason }

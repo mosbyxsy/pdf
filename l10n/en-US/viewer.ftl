@@ -871,3 +871,52 @@ pdfjs-digital-signature-properties-sub-signatures =
         [one] Sub-signature ({ $count })
        *[other] Sub-signatures ({ $count })
     }
+
+## Generic viewer file chooser
+
+pdfjs-file-chooser-app-title = PDF Reader
+pdfjs-file-chooser-preparing = Preparing PDF Viewer…
+pdfjs-file-chooser-button =
+    .title =
+        { PLATFORM() ->
+            [macos] Choose File (⌘⌥O)
+           *[other] Choose File (Ctrl+Alt+O)
+        }
+pdfjs-file-chooser-button-label = Choose File
+pdfjs-file-chooser-return = Return to document
+pdfjs-file-chooser-title = Choose a file to view
+pdfjs-file-chooser-description = Choose a PDF from your computer, a preset file, or an online address.
+pdfjs-file-chooser-local-title = Local PDF file
+pdfjs-file-chooser-drop-hint = Drop a PDF here or choose one from your computer
+pdfjs-file-chooser-browse = Browse files
+pdfjs-file-chooser-preset-label = Preset files
+pdfjs-file-chooser-no-preset = No preset files
+pdfjs-file-chooser-sample-text = Text and search sample (2 pages)
+pdfjs-file-chooser-sample-graphics = Vector graphics sample (1 page)
+pdfjs-file-chooser-sample-tracemonkey = TraceMonkey paper sample (14 pages)
+pdfjs-file-chooser-open = Open
+pdfjs-file-chooser-or-url = Or enter a file address
+pdfjs-file-chooser-url-label = PDF URL
+pdfjs-file-chooser-url-input =
+    .placeholder = https://example.com/document.pdf
+pdfjs-file-chooser-load = Load
+pdfjs-file-chooser-loading-config = Loading file configuration…
+pdfjs-file-chooser-select-file = Choose a PDF file.
+pdfjs-file-chooser-select-pdf = Please choose a PDF file.
+pdfjs-file-chooser-url-required = Enter a PDF URL or choose a preset file.
+pdfjs-file-chooser-invalid-url = The PDF URL is invalid.
+pdfjs-file-chooser-url-http-only = The PDF URL must use HTTP(S).
+pdfjs-file-chooser-opening = Opening “{ $name }”…
+pdfjs-file-chooser-reading = Reading “{ $name }”…
+pdfjs-file-chooser-open-error = Could not open “{ $name }”: { $reason }
+pdfjs-file-chooser-unknown-error = Unknown error
+pdfjs-file-chooser-url-update-error = Could not update the current file URL:
+pdfjs-file-chooser-config-url-required = The config parameter cannot be empty.
+pdfjs-file-chooser-config-invalid-url = The config URL is invalid.
+pdfjs-file-chooser-config-http-url = The config parameter must point to an HTTP(S) JSON file.
+pdfjs-file-chooser-config-fetch-error = Could not load the config JSON. Check the address and the server's CORS settings.
+pdfjs-file-chooser-config-http-error = Could not load the file configuration (HTTP { $status }).
+pdfjs-file-chooser-config-invalid-json = The config file is not valid JSON.
+pdfjs-file-chooser-config-files-required = The config JSON must contain a files array.
+pdfjs-file-chooser-config-invalid-default = defaultFileId must be a string, number, or null.
+pdfjs-file-chooser-startup-error = Could not load the file configuration or default file: { $reason }

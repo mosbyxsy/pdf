@@ -256,9 +256,20 @@ const PDFViewerApplication = {
     // e.g. the various viewer components.
     this.l10n = await this.externalServices.createL10n();
     document.getElementsByTagName("html")[0].dir = this.l10n.getDirection();
+    if (
+      (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) &&
+      document.getElementById("fileChooser")
+    ) {
+      this.setTitle(await this.l10n.get("pdfjs-file-chooser-app-title"));
+    }
     // Connect Fluent, when necessary, and translate what we already have.
     if (typeof PDFJSDev === "undefined" || !PDFJSDev.test("MOZCENTRAL")) {
-      this.l10n.translate(appConfig.appContainer || document.documentElement);
+      const translation = this.l10n.translate(
+        appConfig.appContainer || document.documentElement
+      );
+      if (document.getElementById("fileChooser")) {
+        await translation;
+      }
     }
 
     if (

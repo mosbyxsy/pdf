@@ -27,12 +27,24 @@ function normalizeFiles(files) {
       normalized.push({
         id,
         name,
+        nameL10nId:
+          typeof item.nameL10nId === "string" ? item.nameL10nId : "",
         url,
         action: item.action === "open" ? "open" : "",
       });
     }
   }
   return normalized;
+}
+
+async function localizeFiles(files, l10n) {
+  await Promise.all(
+    files.map(async file => {
+      if (file.nameL10nId) {
+        file.name = (await l10n.get(file.nameL10nId)) || file.name;
+      }
+    })
+  );
 }
 
 function mergeFiles(remoteFiles, localFiles) {
@@ -47,28 +59,37 @@ function mergeFiles(remoteFiles, localFiles) {
   return files;
 }
 
-async function readRemoteConfig(path) {
-  const url = new URL(path, window.location.href);
+async function readRemoteConfig(path, l10n) {
+  let url;
+  try {
+    url = new URL(path, window.location.href);
+  } catch {
+    throw new Error(await l10n.get("pdfjs-file-chooser-config-invalid-url"));
+  }
   if (!["http:", "https:"].includes(url.protocol)) {
-    throw new Error("config 参数必须指向 HTTP(S) JSON 文件。");
+    throw new Error(await l10n.get("pdfjs-file-chooser-config-http-url"));
   }
   let response;
   try {
     response = await fetch(url, { credentials: "same-origin" });
   } catch {
-    throw new Error("无法读取 config JSON，请检查地址和服务器的 CORS 设置。");
+    throw new Error(await l10n.get("pdfjs-file-chooser-config-fetch-error"));
   }
   if (!response.ok) {
-    throw new Error(`无法读取文件配置（HTTP ${response.status}）。`);
+    throw new Error(
+      await l10n.get("pdfjs-file-chooser-config-http-error", {
+        status: response.status,
+      })
+    );
   }
   let config;
   try {
     config = await response.json();
   } catch {
-    throw new Error("config 文件不是有效的 JSON。");
+    throw new Error(await l10n.get("pdfjs-file-chooser-config-invalid-json"));
   }
   if (!config || Array.isArray(config) || !Array.isArray(config.files)) {
-    throw new Error('config JSON 应包含 { "files": [] }。');
+    throw new Error(await l10n.get("pdfjs-file-chooser-config-files-required"));
   }
   if (
     Object.hasOwn(config, "defaultFileId") &&
@@ -76,7 +97,7 @@ async function readRemoteConfig(path) {
     typeof config.defaultFileId !== "string" &&
     typeof config.defaultFileId !== "number"
   ) {
-    throw new Error("defaultFileId 必须是字符串、数字或 null。");
+    throw new Error(await l10n.get("pdfjs-file-chooser-config-invalid-default"));
   }
   return config;
 }
@@ -114,10 +135,27 @@ function initializeFileChooser(app, runPromise) {
   let files = [];
   let selectedFileId = "";
   let busy = false;
+  let messageRevision = 0;
+  let noPresetText = "";
 
-  function setMessage(value, error = false) {
-    message.textContent = value;
+  async function setMessage(id, args = null, error = false) {
+    const revision = ++messageRevision;
     message.classList.toggle("is-error", error);
+    message.textContent = "";
+    if (!id) {
+      return;
+    }
+    const value = await app.l10n.get(id, args);
+    if (revision === messageRevision) {
+      message.textContent = value || "";
+    }
+  }
+
+  async function errorReason(error) {
+    return (
+      error?.message ||
+      (await app.l10n.get("pdfjs-file-chooser-unknown-error"))
+    );
   }
 
   function updateFileUrl(url = null) {
@@ -138,7 +176,9 @@ function initializeFileChooser(app, runPromise) {
       }
       window.history.replaceState(window.history.state, "", viewerUrl);
     } catch (error) {
-      console.warn("无法更新当前文件地址：", error);
+      app.l10n
+        .get("pdfjs-file-chooser-url-update-error")
+        .then(message => console.warn(message, error));
     }
   }
 
@@ -196,7 +236,12 @@ function initializeFileChooser(app, runPromise) {
   function selectPreset(id) {
     const file = files.find(item => item.id === id);
     selectedFileId = file?.id || "";
-    presetValue.textContent = file?.name || "暂无预置文件";
+    if (file) {
+      presetValue.removeAttribute("data-l10n-id");
+    } else {
+      presetValue.setAttribute("data-l10n-id", "pdfjs-file-chooser-no-preset");
+    }
+    presetValue.textContent = file?.name || noPresetText;
     for (const option of presetList.children) {
       option.setAttribute(
         "aria-selected",
@@ -232,14 +277,18 @@ function initializeFileChooser(app, runPromise) {
     }
     startup?.remove();
     setBusy(true);
-    setMessage(`正在打开“${label}”…`);
+    setMessage("pdfjs-file-chooser-opening", { name: label });
     try {
       await app.open(args);
       updateFileUrl(args.url);
       hideChooser();
     } catch (error) {
       showChooser();
-      setMessage(`无法打开“${label}”：${error.message || "未知错误"}`, true);
+      setMessage(
+        "pdfjs-file-chooser-open-error",
+        { name: label, reason: await errorReason(error) },
+        true
+      );
       closeButton.hidden = !app.pdfDocument;
     } finally {
       setBusy(false);
@@ -254,11 +303,11 @@ function initializeFileChooser(app, runPromise) {
       return;
     }
     if (!/\.pdf$/i.test(file.name) && file.type !== "application/pdf") {
-      setMessage("请选择 PDF 文件。", true);
+      setMessage("pdfjs-file-chooser-select-pdf", null, true);
       return;
     }
     setBusy(true);
-    setMessage(`正在读取“${file.name}”…`);
+    setMessage("pdfjs-file-chooser-reading", { name: file.name });
     try {
       const data = new Uint8Array(await file.arrayBuffer());
       await app.open({ data, filename: file.name });
@@ -266,7 +315,11 @@ function initializeFileChooser(app, runPromise) {
       updateFileUrl();
       hideChooser();
     } catch (error) {
-      setMessage(`无法打开“${file.name}”：${error.message || "未知错误"}`, true);
+      setMessage(
+        "pdfjs-file-chooser-open-error",
+        { name: file.name, reason: await errorReason(error) },
+        true
+      );
       closeButton.hidden = !app.pdfDocument;
     } finally {
       fileInput.value = "";
@@ -278,7 +331,7 @@ function initializeFileChooser(app, runPromise) {
     const raw = value.trim();
     if (!raw) {
       showChooser();
-      setMessage("请输入 PDF URL 或选择预置文件。", true);
+      setMessage("pdfjs-file-chooser-url-required", null, true);
       return;
     }
     let url;
@@ -286,12 +339,12 @@ function initializeFileChooser(app, runPromise) {
       url = new URL(raw, window.location.href);
     } catch {
       showChooser();
-      setMessage("PDF URL 无效。", true);
+      setMessage("pdfjs-file-chooser-invalid-url", null, true);
       return;
     }
     if (!["http:", "https:"].includes(url.protocol)) {
       showChooser();
-      setMessage("PDF URL 必须使用 HTTP(S)。", true);
+      setMessage("pdfjs-file-chooser-url-http-only", null, true);
       return;
     }
     return openPdf({ url: url.href }, label);
@@ -421,20 +474,26 @@ function initializeFileChooser(app, runPromise) {
     try {
       await runPromise;
       app.eventBus.on("fileinputchange", () => updateFileUrl());
+      noPresetText = await app.l10n.get("pdfjs-file-chooser-no-preset");
       const query = initialQuery;
       const localConfig = window.PDF_VIEWER_CONFIG || {};
       files = normalizeFiles(localConfig.files);
+      await localizeFiles(files, app.l10n);
       populateFiles();
       let defaultFileId = localConfig.defaultFileId;
 
       if (query.has("config")) {
         const configPath = query.get("config")?.trim();
         if (!configPath) {
-          throw new Error("config 参数不能为空。");
+          throw new Error(
+            await app.l10n.get("pdfjs-file-chooser-config-url-required")
+          );
         }
-        setMessage("正在读取文件配置…");
-        const remoteConfig = await readRemoteConfig(configPath);
-        files = mergeFiles(normalizeFiles(remoteConfig.files), files);
+        setMessage("pdfjs-file-chooser-loading-config");
+        const remoteConfig = await readRemoteConfig(configPath, app.l10n);
+        const remoteFiles = normalizeFiles(remoteConfig.files);
+        await localizeFiles(remoteFiles, app.l10n);
+        files = mergeFiles(remoteFiles, files);
         if (Object.hasOwn(remoteConfig, "defaultFileId")) {
           defaultFileId = remoteConfig.defaultFileId;
         }
@@ -452,12 +511,16 @@ function initializeFileChooser(app, runPromise) {
           await openUrl(defaultFile.url, defaultFile.name);
         } else {
           showChooser();
-          setMessage("请选择一个 PDF 文件。");
+          setMessage("pdfjs-file-chooser-select-file");
         }
       }
     } catch (error) {
       showChooser();
-      setMessage(`文件配置或默认文件加载失败：${error.message || "未知错误"}`, true);
+      setMessage(
+        "pdfjs-file-chooser-startup-error",
+        { reason: await errorReason(error) },
+        true
+      );
       closeButton.hidden = !app.pdfDocument;
     } finally {
       setBusy(false);

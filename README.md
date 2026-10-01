@@ -36,6 +36,8 @@ window.PDF_VIEWER_CONFIG = {
 
 `files` 中每项需提供唯一的 `id`、显示名称 `name` 和文件地址 `url`。可以给某项设置 `action: "open"`，作为 `defaultFileId` 未匹配时的后备默认文件。若两者都没有指定有效文件，选择界面会保持显示。
 
+文件名默认直接显示 `name`。可选的 `nameL10nId` 用于从 PDF.js 的 Fluent 语言文件中读取对应译文；内置示例文件使用了这一字段。
+
 也可以通过 `viewer.html?config=files.json` 加载 JSON 配置。JSON 使用相同的 `files` 和可选的 `defaultFileId` 字段，例如：
 
 ```json
