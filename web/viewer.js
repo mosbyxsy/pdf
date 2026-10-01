@@ -18,6 +18,7 @@ import { AppOptions } from "./app_options.js";
 import { LinkTarget } from "./pdf_link_service.js";
 import { PDFViewerApplication } from "./app.js";
 import { RenderingStates } from "./renderable_view.js";
+import { initializeFileChooser } from "./file_chooser.js";
 
 const AppConstants =
   typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")
@@ -397,7 +398,10 @@ function webViewerLoad() {
       document.dispatchEvent(event);
     }
   }
-  PDFViewerApplication.run(config);
+  const runPromise = PDFViewerApplication.run(config);
+  if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
+    initializeFileChooser(PDFViewerApplication, runPromise);
+  }
 }
 
 // Block the "load" event until all pages are loaded, to ensure that printing

@@ -949,17 +949,22 @@ const PDFViewerApplication = {
     const { appConfig, eventBus } = this;
     let file;
     if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
-      const queryString = document.location.search.substring(1);
-      const params = parseQueryString(queryString);
-      file = params.get("file") ?? AppOptions.get("defaultUrl");
-      // Note that `parseQueryString` has already percent-decoded the parameter,
-      // hence it's used as-is below: re-encoding it would break URLs with e.g.
-      // a query string or a percent-encoded path (issue 20137).
-      // In a relative URL a "#" is assumed to be part of the filename, rather
-      // than a fragment separator, since the viewer takes its own hash
-      // parameters from the *viewer* URL (issue 19990).
-      file = URL.parse(file)?.href ?? file.replaceAll("#", "%23");
-      validateFileURL(file);
+      if (document.getElementById("fileChooser")) {
+        // The chooser opens ?file after local and remote configuration loads.
+        file = "";
+      } else {
+        const queryString = document.location.search.substring(1);
+        const params = parseQueryString(queryString);
+        file = params.get("file") ?? AppOptions.get("defaultUrl");
+        // Note that `parseQueryString` has already percent-decoded the parameter,
+        // hence it's used as-is below: re-encoding it would break URLs with e.g.
+        // a query string or a percent-encoded path (issue 20137).
+        // In a relative URL a "#" is assumed to be part of the filename, rather
+        // than a fragment separator, since the viewer takes its own hash
+        // parameters from the *viewer* URL (issue 19990).
+        file = URL.parse(file)?.href ?? file.replaceAll("#", "%23");
+        validateFileURL(file);
+      }
     } else if (PDFJSDev.test("MOZCENTRAL")) {
       file = window.location.href;
     } else if (PDFJSDev.test("CHROME")) {
@@ -3336,6 +3341,12 @@ function onKeyDown(evt) {
         // focuses input#pageNumber field
         if (this.appConfig.toolbar) {
           this.appConfig.toolbar.pageNumber.select();
+          handled = true;
+        }
+        break;
+      case 79: // o
+        if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
+          document.getElementById("secondaryChooseFile")?.click();
           handled = true;
         }
         break;

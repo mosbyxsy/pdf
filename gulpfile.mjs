@@ -605,6 +605,7 @@ function buildGeneric(defines, dir) {
     gulp
       .src(COMMON_WEB_FILES, { base: "web/", encoding: false })
       .pipe(gulp.dest(dir + "web")),
+    gulp.src("web/config.js", { encoding: false }).pipe(gulp.dest(dir + "web")),
     gulp.src("LICENSE", { encoding: false }).pipe(gulp.dest(dir)),
     gulp
       .src(["web/locale/*/viewer.ftl", "web/locale/locale.json"], {
@@ -623,7 +624,7 @@ function buildGeneric(defines, dir) {
       .pipe(gulp.dest(dir + "web")),
 
     gulp
-      .src("web/compressed.tracemonkey-pldi-09.pdf", { encoding: false })
+      .src("web/*.pdf", { encoding: false })
       .pipe(gulp.dest(dir + "web")),
   ]);
 }
@@ -667,4 +668,3 @@ gulp.task(
     }
   )
 );
-

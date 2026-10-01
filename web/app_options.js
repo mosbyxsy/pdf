@@ -257,7 +257,7 @@ const defaultOptions = new Map([
             value:
               typeof PDFJSDev !== "undefined" && PDFJSDev.test("CHROME")
                 ? ""
-                : "compressed.tracemonkey-pldi-09.pdf",
+                : "",
             kind: OptionKind.VIEWER,
           },
         ],

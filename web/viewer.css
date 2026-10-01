@@ -22,6 +22,7 @@
 /*#endif*/
 @import url(pdf_viewer.css);
 @import url(digital_signature_properties.css);
+@import url(file_chooser.css);
 
 :root {
   --dir-factor: 1;
@@ -1201,6 +1202,9 @@ dialog :link {
   #secondaryToolbarButtonContainer {
     /*#if GENERIC*/
     #secondaryOpenFile::before {
+      mask-image: var(--toolbarButton-openFile-icon);
+    }
+    #secondaryChooseFile::before {
       mask-image: var(--toolbarButton-openFile-icon);
     }
     /*#endif*/
